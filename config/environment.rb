@@ -9,7 +9,7 @@ require Rails.root.join('config/load')
 if Errbit::Config.log_location == 'STDOUT'
   Rails.logger = ActiveSupport::Logger.new STDOUT
 elsif Errbit::Config.log_location == 'Syslog::Logger'
-  Rails.logger = Syslog::Logger.new 'errbit'
+  Rails.logger = Syslog::Logger.new('errbit', Syslog::LOG_LOCAL0)
 else
   Rails.logger = ActiveSupport::Logger.new Errbit::Config.log_location
 end
