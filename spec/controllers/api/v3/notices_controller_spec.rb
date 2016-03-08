@@ -17,7 +17,7 @@ describe Api::V3::NoticesController, type: :controller do
     notice = Notice.last
     expect(JSON.parse(response.body)).to eq(
       'id'  => notice.id.to_s,
-      'url' => app_problem_url(app, notice.problem)
+      'url' => notice.problem.url
     )
   end
 
@@ -32,6 +32,13 @@ describe Api::V3::NoticesController, type: :controller do
     post :create, project_id: 'ID'
     expect(response.status).to eq(400)
     expect(response.body).to eq('Invalid request')
+  end
+
+  it 'responds with 422 when notice comes from an old app' do
+    app.current_app_version = '1.1.0'
+    app.save!
+    post :create, legit_body, legit_params
+    expect(response.status).to eq(422)
   end
 
   it 'responds with 422 when project_id is invalid' do
